@@ -11,44 +11,44 @@ const mysql = require('mySQL2');
 // app.use(express.json());
 
 
-const newRole = [
-    {
-        type: 'input',
-        message: 'What is the name of the new role?',
-        name: 'newRoleName',
-    },{
-        type: 'input',
-        message: 'What is the salary?',
-        name: 'newRoleSalary'
-    },{
-        type: 'input',
-        // Maybe list?
-        message: 'What department is it in?',
-        name: 'newRoleDepart',
-    }
-]
+// const newRole = [
+//     {
+//         type: 'input',
+//         message: 'What is the name of the new role?',
+//         name: 'newRoleName',
+//     },{
+//         type: 'input',
+//         message: 'What is the salary?',
+//         name: 'newRoleSalary'
+//     },{
+//         type: 'input',
+//         // Maybe list?
+//         message: 'What department is it in?',
+//         name: 'newRoleDepart',
+//     }
+// ]
 
-const newEmployee = [
-    {
-        type: 'input',
-        message: 'What is the new employees first name?',
-        name: 'newEmpFirst',
-    },{
-        type: 'input',
-        message: 'What is the new employees last name?',
-        name: 'newEmpLast',
-    },{
-        type: 'input',
-        // Maybe list?
-        message: 'What is their role?',
-        name: 'newEmpRole',
-    },{
-        type: 'input',
-        // Maybe list?
-        message: 'Who is their manager?',
-        name: 'newEmpManager',
-    }
-]
+// const newEmployee = [
+//     {
+//         type: 'input',
+//         message: 'What is the new employees first name?',
+//         name: 'newEmpFirst',
+//     },{
+//         type: 'input',
+//         message: 'What is the new employees last name?',
+//         name: 'newEmpLast',
+//     },{
+//         type: 'input',
+//         // Maybe list?
+//         message: 'What is their role?',
+//         name: 'newEmpRole',
+//     },{
+//         type: 'input',
+//         // Maybe list?
+//         message: 'Who is their manager?',
+//         name: 'newEmpManager',
+//     }
+// ]
 
 // Connect mySQL
 const db = mysql.createConnection(
@@ -61,11 +61,13 @@ const db = mysql.createConnection(
     console.log('Successfully connected to the company_db database.')
 );
 
+initMenu();
+
 // Initial question with menu options
 function initMenu() {
     inquirer.prompt([
         {
-            type: 'list',
+            type: 'rawlist',
             message: 'What would you like to do?',
             choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add a Department', 'Add a Role', 'Add an Employee', 'Update an Employee Role', 'Exit'],
             name: 'menu'
@@ -79,12 +81,12 @@ function initMenu() {
             viewEmployees();
         } else if (ans.menu === 'Add a Department') {
             addDepartment();
-        } else if (ans.menu === 'Add a Role') {
-            addRole();
-        } else if (ans.menu === 'Add an Employee') {
-            addEmployee();
-        } else if (ans.menu === 'Update an Employee Role') {
-            updateEmployee();
+        // } else if (ans.menu === 'Add a Role') {
+        //     addRole();
+        // } else if (ans.menu === 'Add an Employee') {
+        //     addEmployee();
+        // } else if (ans.menu === 'Update an Employee Role') {
+        //     updateEmployee();
         } else {
             process.exit();
         }
@@ -93,31 +95,37 @@ function initMenu() {
 
 // Function to view all departments
 const viewDepartments = () => {
-    db.query('SELECT * FROM department', function (err, results) {
+    const command = 'SELECT department.id AS ID, department.name AS Department FROM department';
+    db.query(command, function (err, results) {
         if (err) {
             throw err;
         } else {
             console.table(results);
+            initMenu();
         }
     })
 }
 // Function to view all roles
 const viewRoles = () => {
-    db.query('SELECT * FROM role', function (err, results) {
+    const command = 'SELECT role.id AS ID, role.title AS Title, department.name AS Department, role.salary AS Salary FROM role JOIN department ON role.department_id = department.id ORDER BY role.id'
+    db.query(command, function (err, results) {
         if (err) {
             throw err;
         } else {
             console.table(results);
+            initMenu();
         }
     })
 }
 // Function to view all employees
 const viewEmployees = () => {
-    db.query('SELECT * FROM employee', function (err, results) {
+    const command = 'SELECT a.id AS ID, CONCAT(a.first_name, " ", a.last_name) AS Employee, role.title AS Title, department.name AS Department, role.salary AS Salary, IFNULL(CONCAT(b.first_name, " ", b.last_name),"[None]") AS Manager FROM employee a LEFT JOIN employee b ON b.id = a.manager_id JOIN role ON a.role_id = role.id JOIN department ON role.department_id = department.id ORDER BY a.id'
+    db.query(command, function (err, results) {
         if (err) {
             throw err;
         } else {
             console.table(results);
+            initMenu();
         }
     })
 }
@@ -130,7 +138,14 @@ const addDepartment = () => {
             name: 'newDepartment',
         }
     ]).then(ans => {
-        db.query('INSERT INTO department (name) VALUES (?)')
+        const input = ans.newDepartment;
+        db.query('INSERT INTO department (name) VALUES (?)', input, (err, data)=>{
+            if (err) {
+                throw err;
+            }
+            console.log("New department successfully added.");
+            initMenu();
+        })
     })
 }
 // Function to add a role

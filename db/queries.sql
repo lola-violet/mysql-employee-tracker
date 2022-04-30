@@ -27,3 +27,12 @@ LEFT JOIN employee b ON b.id = a.manager_id
 JOIN role ON a.role_id = role.id
 JOIN department ON role.department_id = department.id
 ORDER BY a.id;
+
+
+-- Add a Department
+INSERT INTO department (name) VALUES (?);
+
+-- Add a Role
+-- INSERT INTO role (title, salary, )
+-- Add an Employee
+-- Update an Employee Role
