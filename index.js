@@ -3,12 +3,12 @@ const inquirer = require('inquirer');
 const mysql = require('mySQL2');
 
 // Port & app variables
-const PORT = process.env.PORT || 3000;
-const app = express();
+// const PORT = process.env.PORT || 3000;
+// const app = express();
 
-// Middleware for parsing data
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
+// // Middleware for parsing data
+// app.use(express.urlencoded({ extended: false }));
+// app.use(express.json());
 
 
 const newRole = [
