@@ -30,9 +30,11 @@ ORDER BY a.id;
 
 
 -- Add a Department
-INSERT INTO department (name) VALUES (?);
+-- INSERT INTO department (name) VALUES (?);
 
 -- Add a Role
--- INSERT INTO role (title, salary, )
+-- INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)
+
 -- Add an Employee
+
 -- Update an Employee Role
