@@ -38,8 +38,8 @@ function initMenu() {
             addRole();
         } else if (ans.menu === 'Add an Employee') {
             addEmployee();
-        // } else if (ans.menu === 'Update an Employee Role') {
-        //     updateEmployee();
+        } else if (ans.menu === 'Update an Employee Role') {
+            updateEmployee();
         } else {
             process.exit();
         }
@@ -169,12 +169,12 @@ const getRoleId = (input) => {
 }
 
 // Promise to find employee id from manager chosen
-const getManagerId = (input) => {
+const getEmployeeId = (input) => {
     return new Promise((resolve, reject) => {
         db.query('SELECT id FROM employee WHERE first_name = (?) AND last_name = (?)', [input.split(" ")[0], input.split(" ")[1]], (err, ans) => {
             if (err) reject(err);
-            const newManagerId = ans[0].id;
-            resolve(newManagerId);
+            const newEmployeeId = ans[0].id;
+            resolve(newEmployeeId);
         })    
     })
 }
@@ -202,11 +202,8 @@ async function addRole() {
         const newDeptId = await getDepartmentId(data.newRoleDepart);
         db.query('INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)', [data.newRoleName, data.newRoleSalary, newDeptId], (err, ans) => {
             if (err) throw err;
-            db.query('SELECT title AS Title, salary AS Salary, department.name AS Department FROM role JOIN department ON department_id = department.id', (err, ans) => {
-                if(err) throw err;
-                console.table(ans);
-                initMenu();
-            })
+            console.log("New role successfully added.");
+            initMenu();
         })
     })
 }
@@ -237,17 +234,39 @@ async function addEmployee() {
         }
     ]).then(async (data) => {
         const newRoleId = await getRoleId(data.newEmpRole);
-        const newManagerId = await getManagerId(data.newEmpManager);
+        const newManagerId = await getEmployeeId(data.newEmpManager);
         db.query('INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)', [data.newEmpFirst, data.newEmpLast, newRoleId, newManagerId], (err, ans) => {
             if (err) throw err;
-            db.query('SELECT a.id AS ID, CONCAT(a.first_name, " ", a.last_name) AS Employee, role.title AS Title, department.name AS Department, role.salary AS Salary, IFNULL(CONCAT(b.first_name, " ", b.last_name),"[None]") AS Manager FROM employee a LEFT JOIN employee b ON b.id = a.manager_id JOIN role ON a.role_id = role.id JOIN department ON role.department_id = department.id ORDER BY a.id', (err, ans) => {
-                if (err) throw err;
-                console.table(ans);
-                initMenu();
-            })
+            console.log("New employee successfully added.");
+            initMenu();
         })
         
     })
 }
 
 // Function to update an employees role
+async function updateEmployee() {
+    const employeeList = await listEmployees();
+    const roleList = await listRoles();
+    inquirer.prompt([
+        {
+            type: 'rawlist',
+            message: 'Which employees role would you like to update?',
+            choices: employeeList,
+            name: 'chosenEmployee'
+        },{
+            type: 'rawlist',
+            message: 'What is their new role?',
+            choices: roleList,
+            name: 'newRole'
+        }
+    ]).then(async (data) => {
+        const empId = await getEmployeeId(data.chosenEmployee);
+        const newRole = await getRoleId(data.newRole);
+        db.query('UPDATE employee SET role_id = (?) WHERE id = (?)', [newRole, empId], (err, ans) => {
+            if (err) throw err;
+            console.log("Employee role successfully updated.");
+            initMenu();
+        })
+    })
+}
