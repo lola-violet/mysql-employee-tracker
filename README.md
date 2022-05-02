@@ -28,6 +28,10 @@ Next, return to the integrated terminal where you installed the npm packages and
 ---
 
 ## Usage
+
+View the [MySQL_Employee_Tracker_Walkthrough](https://drive.google.com/file/d/1foqQ15SVE-0HPTnGY-3vJKNownzJL3kc/view?usp=sharing).
+
+
 Once you've installed the necessary packages & created the mySQL database, you can begin to use the application. To start, enter "npm start" in the integrated terminal. You will be prompted with a list of actions to choose from. After each selection, you'll return to the initial start menu. To exit the application, select the "exit" option. Each menu selection will perform the following actions:
 
 #### View All Departments
@@ -50,6 +54,14 @@ Once you've installed the necessary packages & created the mySQL database, you c
 
 #### Update an Employee Role
 * This selection will prompt you to select which employee to update & then select their new role. The database will then be updated with the new information. 
+
+![usage_departments](/assets/images/usage_departments.png)
+
+![usage_roles](/assets/images/usage_roles.png)
+
+![usage_employees](/assets/images/usage_employees.png)
+
+![usage_update_employee](/assets/images/usage_update_employee.png)
 
 ---
 
