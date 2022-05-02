@@ -181,58 +181,64 @@ const getEmployeeId = (input) => {
 
 // Function to add a role
 async function addRole() {
-    const deptList = await listDepartments();
-    inquirer.prompt([
-        {
-            type: 'input',
-            message: 'What is the name of the new role?',
-            name: 'newRoleName',
-        },{
-            type: 'input',
-            message: 'What is the salary?',
-            name: 'newRoleSalary'
-        },{
-            type: 'rawlist',
-            message: 'What department is it in?',
-            choices: deptList,
-            name: 'newRoleDepart',
-        }
-    ])
-    .then(async (data) => {
+    try {
+        const deptList = await listDepartments();
+        const data = await inquirer.prompt([
+            {
+                type: 'input',
+                message: 'What is the name of the new role?',
+                name: 'newRoleName',
+            },{
+                type: 'input',
+                message: 'What is the salary?',
+                name: 'newRoleSalary'
+            },{
+                type: 'rawlist',
+                message: 'What department is it in?',
+                choices: deptList,
+                name: 'newRoleDepart',
+            }
+        ])
         const newDeptId = await getDepartmentId(data.newRoleDepart);
         db.query('INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)', [data.newRoleName, data.newRoleSalary, newDeptId], (err, ans) => {
             if (err) throw err;
             console.log("New role successfully added.");
             initMenu();
         })
-    })
+    }
+    catch(err) {
+        console.log(err);
+        initMenu();
+    }
 }
+
 
 // Function to add an employee
 async function addEmployee() {
-    const roleList = await listRoles();
-    const employeeList = await listEmployees();
-    inquirer.prompt([
-        {
-            type: 'input',
-            message: 'What is the new employees first name?',
-            name: 'newEmpFirst',
-        },{
-            type: 'input',
-            message: 'What is the new employees last name?',
-            name: 'newEmpLast',
-        },{
-            type: 'rawlist',
-            message: 'What is their role?',
-            choices: roleList,
-            name: 'newEmpRole',
-        },{
-            type: 'rawlist',
-            message: 'Who is their manager?',
-            choices: employeeList,
-            name: 'newEmpManager',
-        }
-    ]).then(async (data) => {
+    try {
+        const roleList = await listRoles();
+        const employeeList = await listEmployees();
+        const data = await inquirer.prompt([
+            {
+                type: 'input',
+                message: 'What is the new employees first name?',
+                name: 'newEmpFirst',
+            },{
+                type: 'input',
+                message: 'What is the new employees last name?',
+                name: 'newEmpLast',
+            },{
+                type: 'rawlist',
+                message: 'What is their role?',
+                choices: roleList,
+                name: 'newEmpRole',
+            },{
+                type: 'rawlist',
+                message: 'Who is their manager?',
+                choices: employeeList,
+                name: 'newEmpManager',
+            }
+        ])
         const newRoleId = await getRoleId(data.newEmpRole);
         const newManagerId = await getEmployeeId(data.newEmpManager);
         db.query('INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)', [data.newEmpFirst, data.newEmpLast, newRoleId, newManagerId], (err, ans) => {
@@ -240,27 +246,31 @@ async function addEmployee() {
             console.log("New employee successfully added.");
             initMenu();
         })
-        
-    })
+    }
+    catch(err) {
+        console.log(err);
+        initMenu();
+    }
 }
 
 // Function to update an employees role
 async function updateEmployee() {
-    const employeeList = await listEmployees();
-    const roleList = await listRoles();
-    inquirer.prompt([
-        {
-            type: 'rawlist',
-            message: 'Which employees role would you like to update?',
-            choices: employeeList,
-            name: 'chosenEmployee'
-        },{
-            type: 'rawlist',
-            message: 'What is their new role?',
-            choices: roleList,
-            name: 'newRole'
-        }
-    ]).then(async (data) => {
+    try {
+        const employeeList = await listEmployees();
+        const roleList = await listRoles();
+        const data = await inquirer.prompt([
+            {
+                type: 'rawlist',
+                message: 'Which employees role would you like to update?',
+                choices: employeeList,
+                name: 'chosenEmployee'
+            },{
+                type: 'rawlist',
+                message: 'What is their new role?',
+                choices: roleList,
+                name: 'newRole'
+            }
+        ])
         const empId = await getEmployeeId(data.chosenEmployee);
         const newRole = await getRoleId(data.newRole);
         db.query('UPDATE employee SET role_id = (?) WHERE id = (?)', [newRole, empId], (err, ans) => {
@@ -268,5 +278,9 @@ async function updateEmployee() {
             console.log("Employee role successfully updated.");
             initMenu();
         })
-    })
+    }
+    catch(err) {
+        console.log(err);
+        initMenu();
+    }
 }
