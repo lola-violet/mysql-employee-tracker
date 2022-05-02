@@ -31,25 +31,25 @@ Next, return to the integrated terminal where you installed the npm packages and
 Once you've installed the necessary packages & created the mySQL database, you can begin to use the application. To start, enter "npm start" in the integrated terminal. You will be prompted with a list of actions to choose from. After each selection, you'll return to the initial start menu. To exit the application, select the "exit" option. Each menu selection will perform the following actions:
 
 #### View All Departments
-This selection will present a table showing all current departments & their associated IDs.
+* This selection will present a table showing all current departments & their associated IDs.
 
 #### View All Roles
-This selection will present a table showing all current role titles, their associated IDs, the department they belong to, and their salary. 
+* This selection will present a table showing all current role titles, their associated IDs, the department they belong to, and their salary. 
 
 #### View All Employees
-This selection will present a table showing all current employees, their associated IDs, their titles, departments, salaries, and managers. 
+* This selection will present a table showing all current employees, their associated IDs, their titles, departments, salaries, and managers. 
 
 #### Add a Department
-This selection will prompt you to enter the name of the new department, and then add it to the database. 
+* This selection will prompt you to enter the name of the new department, and then add it to the database. 
 
 #### Add a Role
-This selection will prompt you to enter the title of the role, select the department the role is in, and enter the role's salary. It will then be added to the database.
+* This selection will prompt you to enter the title of the role, select the department the role is in, and enter the role's salary. It will then be added to the database.
 
 #### Add an Employee
-This selection will prompt you to enter the first & last name of the new employee, select their role, and select their manager. They will then be added to the database.
+* This selection will prompt you to enter the first & last name of the new employee, select their role, and select their manager. They will then be added to the database.
 
 #### Update an Employee Role
-This selection will prompt you to select which employee to update & then select their new role. The database will then be updated with the new information. 
+* This selection will prompt you to select which employee to update & then select their new role. The database will then be updated with the new information. 
 
 ---
 
